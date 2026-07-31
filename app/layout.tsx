@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://erereck.github.io/erilab/"),
   title: "EriLab // Terminal",
   description: "Site da EriLab: jogos, projetos e equipe em um terminal interativo.",
+  icons: {
+    icon: [{ url: "https://erereck.github.io/erilab/favicon.png", type: "image/png" }],
+    shortcut: "https://erereck.github.io/erilab/favicon.png",
+  },
   openGraph: {
     title: "EriLab // Terminal",
     description: "Jogos, projetos e equipe da EriLab.",
