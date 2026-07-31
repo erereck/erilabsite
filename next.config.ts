@@ -4,8 +4,8 @@ const isGitHubPages = process.env.GITHUB_ACTIONS === "true";
 
 const nextConfig: NextConfig = {
   output: isGitHubPages ? "export" : undefined,
-  basePath: isGitHubPages ? "/erilabsite" : "",
-  assetPrefix: isGitHubPages ? "/erilabsite/" : undefined,
+  basePath: isGitHubPages ? "/erilab" : "",
+  assetPrefix: isGitHubPages ? "/erilab/" : undefined,
   trailingSlash: true,
   images: { unoptimized: true },
   turbopack: { root: process.cwd() },
