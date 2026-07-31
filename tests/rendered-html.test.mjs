@@ -52,7 +52,8 @@ test("mantém todo o catálogo solicitado", async () => {
     "Griñvog",
   ]) assert.match(terminal, new RegExp(item.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 
-  assert.match(layout, /EriLab \/\/ Terminal/);
+  assert.match(layout, /Fazendo seu Eri ficar Lab desde 2017\./);
+  assert.doesNotMatch(layout, /EriLab \/\/ Terminal|Jogos, projetos e equipe da EriLab\./);
   assert.match(layout, /favicon\.png/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.doesNotMatch(terminal, /BetterVB|Player\.cls/i);
