@@ -43,6 +43,7 @@ const games: Project[] = [
   { id: "trauma-center", name: "Salve a Pátria Matheus Primagi: Trauma Center", url: "https://pptgamespt.wixsite.com/crate/projetos/XhFxR", description: "página do projeto", status: "ainda não lançado" },
   { id: "futbobo", name: "Futbobo", url: "https://erereck.github.io/futbobo/", description: "carreira de futebol, dos 12 anos à aposentadoria" },
   { id: "mimica-quente", name: "Mímica Quente", url: "https://mimicaquente.vercel.app", description: "batata quente de mímica para jogar com os amigos" },
+  { id: "mmm-fes", name: "Muito, Muito Minimalista: FES", url: "https://erickssen.itch.io/mmm" },
   { id: "project-legacy", name: "Project Legacy [2.5.5]", url: "https://www.mediafire.com/file/wym0h4pdojgaxsf/ProjectLegacy.rar/file", description: "download" },
   { id: "distext", name: "Distext", url: "https://www.mediafire.com/file/1xsddtmvxveqwla/EriLab_DisText.rar/file", description: "download" },
   { id: "amitext", name: "Amitext", url: "https://www.mediafire.com/file/zjfx57tvdh9lk1e/AmiText.ppsm/file", description: "download" },
@@ -80,17 +81,9 @@ const team = [
   ["Griñvog", "Testador e Editor de trailers"],
 ];
 
-const bootLines = [
-  "iniciando terminal da erilab...",
-  "carregando catálogo de jogos... ok",
-  "carregando outros projetos... ok",
-  "carregando equipe... ok",
-  "conexão estabelecida.",
-];
-
 const allProjects = [...games, ...oldGames, ...otherProjects];
-const commandNames = ["help", "jogos", "projetos", "antigos", "equipe", "sobre", "logo", "limpar"];
-type OutputKind = "help" | "games" | "projects" | "old" | "team" | "about" | "logo" | "message";
+const commandNames = ["help", "jogos", "projetos", "equipe", "sobre", "logo", "limpar"];
+type OutputKind = "help" | "games" | "projects" | "team" | "about" | "logo" | "message";
 type HistoryEntry = { command: string; kind: OutputKind; message?: string };
 
 function normalize(value: string) {
@@ -102,17 +95,18 @@ function openUrl(url: string) {
   if (newWindow) newWindow.opener = null;
 }
 
-function ProjectList({ items }: { items: Project[] }) {
+function ProjectList({ items, compact = false, showHint = true }: { items: Project[]; compact?: boolean; showHint?: boolean }) {
   return (
-    <div className="project-list">
+    <div className={compact ? "project-list compact-project-list" : "project-list"}>
       {items.map((project) => (
-        <button key={project.id} className="terminal-link project-line" onClick={() => openUrl(project.url)}>
+        <button key={project.id} className={`terminal-link project-line${compact ? " compact" : ""}`} onClick={() => openUrl(project.url)}>
+          {compact ? <span className="project-id">{project.id}</span> : null}
           <span className="project-name">{project.name}</span>
-          <span className="project-description">{project.description ?? ""}</span>
-          <span className="project-meta">{project.status ? `[${project.status}] ` : ""}{project.id}</span>
+          {!compact ? <span className="project-description">{project.description ?? ""}</span> : null}
+          {!compact ? <span className="project-meta">{project.id}</span> : null}
         </button>
       ))}
-      <p className="hint">use “abrir &lt;id&gt;” ou clique em uma linha</p>
+      {showHint ? <p className="hint">use “abrir &lt;id&gt;” ou clique em uma linha</p> : null}
     </div>
   );
 }
@@ -124,9 +118,8 @@ function CommandButton({ command, children, run }: { command: string; children?:
 function Output({ entry, run }: { entry: HistoryEntry; run: (command: string) => void }) {
   if (entry.kind === "help") {
     const rows = [
-      ["jogos", "lista os jogos"],
+      ["jogos", "lista os jogos atuais e antigos"],
       ["projetos", "lista os projetos fora da categoria jogos"],
-      ["antigos", "lista os jogos antigos"],
       ["equipe", "mostra a equipe"],
       ["sobre", "mostra as informações da EriLab"],
       ["logo", "mostra a logo novamente"],
@@ -148,9 +141,8 @@ function Output({ entry, run }: { entry: HistoryEntry; run: (command: string) =>
       </div>
     );
   }
-  if (entry.kind === "games") return <><p className="section-title">jogos — {games.length} no catálogo</p><ProjectList items={games} /></>;
+  if (entry.kind === "games") return <div className="output-block"><p className="section-title">jogos — {games.length} no catálogo</p><ProjectList items={games} compact showHint={false} /><p className="section-title old-section">jogos antigos — {oldGames.length}</p><ProjectList items={oldGames} compact showHint={false} /><p className="hint">use “abrir &lt;id&gt;” ou clique em uma linha</p></div>;
   if (entry.kind === "projects") return <><p className="section-title">outros projetos</p><ProjectList items={otherProjects} /></>;
-  if (entry.kind === "old") return <><p className="section-title">jogos antigos</p><ProjectList items={oldGames} /></>;
   if (entry.kind === "logo") return <pre className="ascii-logo compact">{ASCII_LOGO}</pre>;
   if (entry.kind === "team") {
     return (
@@ -180,34 +172,26 @@ export default function Terminal() {
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyPosition, setHistoryPosition] = useState(0);
-  const [bootCount, setBootCount] = useState(0);
   const [showIntro, setShowIntro] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const screenRef = useRef<HTMLDivElement>(null);
-  const bootDone = bootCount >= bootLines.length;
-
   useEffect(() => {
-    if (bootDone) {
-      inputRef.current?.focus();
-      return;
-    }
-    const timeout = window.setTimeout(() => setBootCount((count) => count + 1), 85);
-    return () => window.clearTimeout(timeout);
-  }, [bootCount, bootDone]);
+    inputRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     if (screenRef.current) screenRef.current.scrollTop = screenRef.current.scrollHeight;
-  }, [entries, bootCount, showIntro]);
+  }, [entries, showIntro]);
 
   useEffect(() => {
     function focusOnTyping(event: globalThis.KeyboardEvent) {
       const target = event.target as HTMLElement | null;
-      if (!bootDone || target?.closest("input, button, a") || event.ctrlKey || event.metaKey || event.altKey) return;
+      if (target?.closest("input, button, a") || event.ctrlKey || event.metaKey || event.altKey) return;
       if (event.key.length === 1) inputRef.current?.focus();
     }
     window.addEventListener("keydown", focusOnTyping);
     return () => window.removeEventListener("keydown", focusOnTyping);
-  }, [bootDone]);
+  }, []);
 
   function syncCaret() {
     window.requestAnimationFrame(() => setCaretIndex(inputRef.current?.selectionStart ?? input.length));
@@ -240,7 +224,7 @@ export default function Terminal() {
     if (["ajuda", "help", "?"].includes(command)) entry = { command: typed, kind: "help" };
     else if (["jogos", "games"].includes(command)) entry = { command: typed, kind: "games" };
     else if (["projetos", "outros", "outros-projetos", "projects"].includes(normalized)) entry = { command: typed, kind: "projects" };
-    else if (["antigos", "projetos-antigos", "old"].includes(normalized)) entry = { command: typed, kind: "old" };
+    else if (["antigos", "projetos-antigos", "old"].includes(normalized)) entry = { command: typed, kind: "games" };
     else if (["equipe", "team", "crew"].includes(command)) entry = { command: typed, kind: "team" };
     else if (["sobre", "about"].includes(command)) entry = { command: typed, kind: "about" };
     else if (command === "logo") entry = { command: typed, kind: "logo" };
@@ -311,18 +295,9 @@ export default function Terminal() {
             <div className="intro">
               <pre className="ascii-logo" aria-label="Logo da EriLab em ASCII">{ASCII_LOGO}</pre>
               <p className="brand-name">EriLab</p>
-              <p className="tagline">equipe de jogos</p>
-              <div className="boot-output">
-                {bootLines.slice(0, bootCount).map((line, index) => <p className={index === bootLines.length - 1 ? "boot-ok" : "boot-line"} key={line}>{line}</p>)}
-              </div>
-              {bootDone ? (
-                <div className="welcome">
-                  <p>digite “help” ou escolha um comando:</p>
-                  <nav aria-label="Comandos rápidos">
-                    {commandNames.slice(0, 6).map((command) => <CommandButton key={command} command={command} run={runCommand}>{command}</CommandButton>)}
-                  </nav>
-                </div>
-              ) : null}
+              <nav className="intro-commands" aria-label="Comandos rápidos">
+                {commandNames.map((command) => <CommandButton key={command} command={command} run={runCommand}>{command}</CommandButton>)}
+              </nav>
             </div>
           ) : null}
 
@@ -349,8 +324,7 @@ export default function Terminal() {
               autoCapitalize="none"
               spellCheck={false}
               aria-label="Digite um comando"
-              placeholder={bootDone ? "digite um comando… (help)" : "carregando…"}
-              disabled={!bootDone}
+              placeholder="digite um comando… (help)"
             />
             <span className="cursor-track" aria-hidden="true"><span className="caret-measure">{input.slice(0, caretIndex)}</span><i /></span>
           </div>

@@ -66,12 +66,10 @@ button, input { font: inherit; }
   flex: 1;
   min-height: 0;
   overflow: auto;
-  padding-right: 6px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-.terminal-screen::-webkit-scrollbar { width: 8px; }
-.terminal-screen::-webkit-scrollbar-thumb { border-radius: 4px; background: var(--border); }
+.terminal-screen::-webkit-scrollbar { display: none; width: 0; height: 0; }
 
 p { margin: 0; white-space: pre-wrap; word-break: break-word; }
 .ascii-logo {
@@ -88,12 +86,7 @@ p { margin: 0; white-space: pre-wrap; word-break: break-word; }
 .ascii-logo::-webkit-scrollbar { display: none; }
 .ascii-logo.compact { margin: 8px 0; }
 .brand-name { color: var(--fg); }
-.tagline { color: var(--amber); }
-.boot-output { margin-top: 12px; }
-.boot-line { color: var(--fg-dim); }
-.boot-ok { color: var(--fg-mid); }
-.welcome { margin-top: 10px; color: var(--fg-mid); }
-.welcome nav { display: flex; flex-wrap: wrap; gap: 2px 14px; }
+.intro-commands { display: flex; flex-wrap: wrap; gap: 2px 14px; margin-top: 5px; }
 
 .terminal-link {
   padding: 0;
@@ -114,6 +107,7 @@ p { margin: 0; white-space: pre-wrap; word-break: break-word; }
 .command-echo span, .prompt label, .amber, .section-title { color: var(--amber); }
 .output-block, .project-list, .team-list, .message { margin-top: 4px; }
 .section-title { margin-bottom: 3px; }
+.old-section { margin-top: 12px; }
 
 .help-table { display: grid; gap: 1px; max-width: 620px; }
 .help-row { display: grid; grid-template-columns: 150px 1fr; gap: 14px; }
@@ -131,6 +125,9 @@ p { margin: 0; white-space: pre-wrap; word-break: break-word; }
 .project-description, .project-meta { color: var(--fg-dim); }
 .project-meta { text-align: right; }
 .project-line:hover .project-description, .project-line:hover .project-meta { color: #b98648; }
+.project-line.compact { grid-template-columns: minmax(150px, 220px) minmax(240px, 1fr); }
+.project-line.compact .project-id { color: var(--fg-dim); }
+.project-line.compact:hover .project-id { color: #b98648; }
 
 .team-list p { display: grid; grid-template-columns: 120px 1fr; }
 .team-list span { color: var(--fg); }
@@ -181,6 +178,7 @@ p { margin: 0; white-space: pre-wrap; word-break: break-word; }
   body { font-size: 13px; }
   .terminal { padding: 14px 12px 10px; }
   .project-line { grid-template-columns: 1fr auto; gap: 0 10px; padding: 5px 0; }
+  .project-line.compact { grid-template-columns: minmax(130px, auto) 1fr; gap: 10px; }
   .project-description { grid-column: 1 / -1; }
   .project-meta { grid-column: 2; grid-row: 1; font-size: 11px; }
   .help-row { grid-template-columns: 118px 1fr; gap: 8px; }

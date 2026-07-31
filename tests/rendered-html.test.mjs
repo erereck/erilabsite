@@ -22,7 +22,8 @@ test("renderiza o terminal da EriLab", async () => {
   const html = await response.text();
   assert.match(html, /<title>EriLab \/\/ Terminal<\/title>/i);
   assert.match(html, /EriLab/);
-  assert.match(html, /equipe de jogos/);
+  assert.match(html, /Comandos rápidos/);
+  assert.doesNotMatch(html, /equipe de jogos/);
   assert.match(html, /@@@@@@@@@@@@@@@@/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
@@ -39,6 +40,7 @@ test("mantém todo o catálogo solicitado", async () => {
     "Salve a Pátria Matheus Primagi: Trauma Center",
     "Futbobo",
     "Mímica Quente",
+    "Muito, Muito Minimalista: FES",
     "Project Legacy [2.5.5]",
     "PokéCatch",
     "Churrasqueira Maker (ANTIGO)",
@@ -53,4 +55,5 @@ test("mantém todo o catálogo solicitado", async () => {
   assert.match(layout, /EriLab \/\/ Terminal/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.doesNotMatch(terminal, /BetterVB|Player\.cls/i);
+  assert.doesNotMatch(terminal, /iniciando terminal da erilab|carregando catálogo de jogos/i);
 });
