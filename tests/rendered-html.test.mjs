@@ -21,7 +21,7 @@ test("renderiza o terminal da EriLab", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>EriLab \/\/ Terminal<\/title>/i);
-  assert.match(html, /ERILAB/);
+  assert.match(html, /EriLab/);
   assert.match(html, /equipe de jogos/);
   assert.match(html, /@@@@@@@@@@@@@@@@/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
@@ -42,7 +42,7 @@ test("mantém todo o catálogo solicitado", async () => {
     "Project Legacy [2.5.5]",
     "PokéCatch",
     "Churrasqueira Maker (ANTIGO)",
-    "Monstrous JSON Generator",
+    "Superlotador de JSON",
     "AnimeTier",
     "O Plano Maker",
     "play.line",

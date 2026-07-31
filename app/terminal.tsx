@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 
 const ASCII_LOGO = String.raw`                 @@@@@@@@@@@@@@@@                 
              @@@@@@@@@@@@@@@@@@@@@@@@             
@@ -34,24 +34,25 @@ type Project = {
   id: string;
   name: string;
   url: string;
+  description?: string;
   status?: string;
 };
 
 const games: Project[] = [
-  { id: "sub-teste", name: "Sub Teste()", url: "https://pptgamespt.wixsite.com/crate/projetos/wBnWW", status: "novo" },
-  { id: "trauma-center", name: "Salve a Pátria Matheus Primagi: Trauma Center", url: "https://pptgamespt.wixsite.com/crate/projetos/XhFxR", status: "ainda não lançado" },
-  { id: "futbobo", name: "Futbobo", url: "https://erereck.github.io/futbobo/" },
-  { id: "mimica-quente", name: "Mímica Quente", url: "https://mimicaquente.vercel.app" },
-  { id: "project-legacy", name: "Project Legacy [2.5.5]", url: "https://www.mediafire.com/file/wym0h4pdojgaxsf/ProjectLegacy.rar/file" },
-  { id: "distext", name: "Distext", url: "https://www.mediafire.com/file/1xsddtmvxveqwla/EriLab_DisText.rar/file" },
-  { id: "amitext", name: "Amitext", url: "https://www.mediafire.com/file/zjfx57tvdh9lk1e/AmiText.ppsm/file" },
-  { id: "juninho-unlimited", name: "Juninho Unlimited", url: "https://www.mediafire.com/file/fsvyrbowvqr0pj4/JuninhoUnlimited.ppsm/file" },
-  { id: "gerador-de-ideias", name: "Gerador de ideias", url: "https://www.mediafire.com/file/n81jv97itx5es4s/Gerador_De_Ideias_-_EriLab.ppsm/file" },
-  { id: "powerpoint-heroes", name: "PowerPoint Heroes", url: "https://www.mediafire.com/file/8s0rc0likjhzr6p/PowerPoint_Heroes.zip/file" },
-  { id: "pokecatch", name: "PokéCatch", url: "https://pptgamespt.wixsite.com/crate/projetos/0rytJ" },
-  { id: "cao-the-game", name: "Cão: The Game", url: "https://pptgamespt.wixsite.com/crate/projetos/jKPzf" },
-  { id: "reciclagem-simulator", name: "RECICLAGEM SIMULATOR", url: "https://pptgamespt.wixsite.com/crate/projetos/8Jc5d" },
-  { id: "esquerdista-maker", name: "Esquerdista Maker", url: "https://www.mediafire.com/file/ytoq8vu1syugh05/Esquerdista+Maker.ppsm/file" },
+  { id: "sub-teste", name: "Sub Teste()", url: "https://pptgamespt.wixsite.com/crate/projetos/wBnWW", description: "página do projeto", status: "novo" },
+  { id: "trauma-center", name: "Salve a Pátria Matheus Primagi: Trauma Center", url: "https://pptgamespt.wixsite.com/crate/projetos/XhFxR", description: "página do projeto", status: "ainda não lançado" },
+  { id: "futbobo", name: "Futbobo", url: "https://erereck.github.io/futbobo/", description: "carreira de futebol, dos 12 anos à aposentadoria" },
+  { id: "mimica-quente", name: "Mímica Quente", url: "https://mimicaquente.vercel.app", description: "batata quente de mímica para jogar com os amigos" },
+  { id: "project-legacy", name: "Project Legacy [2.5.5]", url: "https://www.mediafire.com/file/wym0h4pdojgaxsf/ProjectLegacy.rar/file", description: "download" },
+  { id: "distext", name: "Distext", url: "https://www.mediafire.com/file/1xsddtmvxveqwla/EriLab_DisText.rar/file", description: "download" },
+  { id: "amitext", name: "Amitext", url: "https://www.mediafire.com/file/zjfx57tvdh9lk1e/AmiText.ppsm/file", description: "download" },
+  { id: "juninho-unlimited", name: "Juninho Unlimited", url: "https://www.mediafire.com/file/fsvyrbowvqr0pj4/JuninhoUnlimited.ppsm/file", description: "download" },
+  { id: "gerador-de-ideias", name: "Gerador de ideias", url: "https://www.mediafire.com/file/n81jv97itx5es4s/Gerador_De_Ideias_-_EriLab.ppsm/file", description: "download" },
+  { id: "powerpoint-heroes", name: "PowerPoint Heroes", url: "https://www.mediafire.com/file/8s0rc0likjhzr6p/PowerPoint_Heroes.zip/file", description: "download" },
+  { id: "pokecatch", name: "PokéCatch", url: "https://pptgamespt.wixsite.com/crate/projetos/0rytJ", description: "página do projeto" },
+  { id: "cao-the-game", name: "Cão: The Game", url: "https://pptgamespt.wixsite.com/crate/projetos/jKPzf", description: "página do projeto" },
+  { id: "reciclagem-simulator", name: "RECICLAGEM SIMULATOR", url: "https://pptgamespt.wixsite.com/crate/projetos/8Jc5d", description: "página do projeto" },
+  { id: "esquerdista-maker", name: "Esquerdista Maker", url: "https://www.mediafire.com/file/ytoq8vu1syugh05/Esquerdista+Maker.ppsm/file", description: "download" },
 ];
 
 const oldGames: Project[] = [
@@ -62,7 +63,7 @@ const oldGames: Project[] = [
 ];
 
 const otherProjects: Project[] = [
-  { id: "superlotador-de-json", name: "Monstrous JSON Generator", url: "https://superlotadordejson.vercel.app/" },
+  { id: "superlotador-de-json", name: "Superlotador de JSON", url: "https://superlotadordejson.vercel.app/" },
   { id: "animetier", name: "AnimeTier", url: "https://animetier.vercel.app/" },
   { id: "o-plano-maker", name: "O Plano Maker", url: "https://oplanomaker.vercel.app/" },
   { id: "play-line", name: "play.line", url: "https://theplayline.vercel.app/" },
@@ -79,18 +80,25 @@ const team = [
   ["Griñvog", "Testador e Editor de trailers"],
 ];
 
-const allProjects = [...games, ...oldGames, ...otherProjects];
-const commands = ["ajuda", "jogos", "projetos", "antigos", "equipe", "logo", "limpar"];
+const bootLines = [
+  "iniciando terminal da erilab...",
+  "carregando catálogo de jogos... ok",
+  "carregando outros projetos... ok",
+  "carregando equipe... ok",
+  "conexão estabelecida.",
+];
 
-type OutputKind = "help" | "games" | "projects" | "old" | "team" | "logo" | "message";
+const allProjects = [...games, ...oldGames, ...otherProjects];
+const commandNames = ["help", "jogos", "projetos", "antigos", "equipe", "sobre", "logo", "limpar"];
+type OutputKind = "help" | "games" | "projects" | "old" | "team" | "about" | "logo" | "message";
 type HistoryEntry = { command: string; kind: OutputKind; message?: string };
 
 function normalize(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 }
 
-function openProject(project: Project) {
-  const newWindow = window.open(project.url, "_blank", "noopener,noreferrer");
+function openUrl(url: string) {
+  const newWindow = window.open(url, "_blank", "noopener,noreferrer");
   if (newWindow) newWindow.opener = null;
 }
 
@@ -98,44 +106,68 @@ function ProjectList({ items }: { items: Project[] }) {
   return (
     <div className="project-list">
       {items.map((project) => (
-        <button key={project.id} className="terminal-link project-line" onClick={() => openProject(project)}>
-          <span className="project-id">{project.id}</span>
+        <button key={project.id} className="terminal-link project-line" onClick={() => openUrl(project.url)}>
           <span className="project-name">{project.name}</span>
-          {project.status ? <span className="project-status">[{project.status}]</span> : null}
+          <span className="project-description">{project.description ?? ""}</span>
+          <span className="project-meta">{project.status ? `[${project.status}] ` : ""}{project.id}</span>
         </button>
       ))}
-      <p className="hint">use: abrir &lt;id&gt; — ou clique em uma linha</p>
+      <p className="hint">use “abrir &lt;id&gt;” ou clique em uma linha</p>
     </div>
   );
 }
 
-function Output({ entry }: { entry: HistoryEntry }) {
+function CommandButton({ command, children, run }: { command: string; children?: React.ReactNode; run: (command: string) => void }) {
+  return <button className="terminal-link command-button" onClick={() => run(command)}>{children ?? command}</button>;
+}
+
+function Output({ entry, run }: { entry: HistoryEntry; run: (command: string) => void }) {
   if (entry.kind === "help") {
+    const rows = [
+      ["jogos", "lista os jogos"],
+      ["projetos", "lista os projetos fora da categoria jogos"],
+      ["antigos", "lista os jogos antigos"],
+      ["equipe", "mostra a equipe"],
+      ["sobre", "mostra as informações da EriLab"],
+      ["logo", "mostra a logo novamente"],
+      ["abrir <id>", "abre um jogo ou projeto"],
+      ["limpar", "limpa a tela"],
+    ];
     return (
       <div className="output-block">
-        <p>comandos disponíveis:</p>
-        <p>ajuda&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mostra esta lista</p>
-        <p>jogos&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lista os jogos</p>
-        <p>projetos&nbsp;&nbsp;&nbsp;lista os outros projetos</p>
-        <p>antigos&nbsp;&nbsp;&nbsp;&nbsp;lista os jogos antigos</p>
-        <p>equipe&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mostra a equipe</p>
-        <p>logo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mostra a logo</p>
-        <p>abrir &lt;id&gt;&nbsp;abre um projeto</p>
-        <p>limpar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;limpa o terminal</p>
+        <p className="section-title">comandos disponíveis</p>
+        <div className="help-table">
+          {rows.map(([command, description]) => (
+            <div className="help-row" key={command}>
+              {command.includes("<") ? <span className="amber">{command}</span> : <CommandButton command={command} run={run} />}
+              <span>{description}</span>
+            </div>
+          ))}
+        </div>
+        <p className="hint">atalhos: ↑/↓ histórico · Tab completa · Ctrl+L limpa</p>
       </div>
     );
   }
-
-  if (entry.kind === "games") return <ProjectList items={games} />;
-  if (entry.kind === "projects") return <ProjectList items={otherProjects} />;
-  if (entry.kind === "old") return <ProjectList items={oldGames} />;
+  if (entry.kind === "games") return <><p className="section-title">jogos — {games.length} no catálogo</p><ProjectList items={games} /></>;
+  if (entry.kind === "projects") return <><p className="section-title">outros projetos</p><ProjectList items={otherProjects} /></>;
+  if (entry.kind === "old") return <><p className="section-title">jogos antigos</p><ProjectList items={oldGames} /></>;
   if (entry.kind === "logo") return <pre className="ascii-logo compact">{ASCII_LOGO}</pre>;
   if (entry.kind === "team") {
     return (
-      <div className="team-list">
-        {team.map(([name, role]) => (
-          <p key={name}><span>{name}</span> — {role}</p>
-        ))}
+      <div className="output-block">
+        <p className="section-title">equipe erilab</p>
+        <div className="team-list">
+          {team.map(([name, role]) => <p key={name}><span>{name}</span><small>{role}</small></p>)}
+        </div>
+      </div>
+    );
+  }
+  if (entry.kind === "about") {
+    return (
+      <div className="output-block">
+        <p className="section-title">sobre a erilab</p>
+        <p>A EriLab é uma equipe de jogos.</p>
+        <button className="terminal-link archive-link" onClick={() => openUrl("https://erickssenlvb.wixsite.com/erilab")}>site antigo (arquivado): erickssenlvb.wixsite.com/erilab</button>
       </div>
     );
   }
@@ -144,48 +176,86 @@ function Output({ entry }: { entry: HistoryEntry }) {
 
 export default function Terminal() {
   const [input, setInput] = useState("");
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [caretIndex, setCaretIndex] = useState(0);
+  const [entries, setEntries] = useState<HistoryEntry[]>([]);
+  const [commandHistory, setCommandHistory] = useState<string[]>([]);
+  const [historyPosition, setHistoryPosition] = useState(0);
+  const [bootCount, setBootCount] = useState(0);
+  const [showIntro, setShowIntro] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
-  const endRef = useRef<HTMLDivElement>(null);
+  const screenRef = useRef<HTMLDivElement>(null);
+  const bootDone = bootCount >= bootLines.length;
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [history]);
+    if (bootDone) {
+      inputRef.current?.focus();
+      return;
+    }
+    const timeout = window.setTimeout(() => setBootCount((count) => count + 1), 85);
+    return () => window.clearTimeout(timeout);
+  }, [bootCount, bootDone]);
+
+  useEffect(() => {
+    if (screenRef.current) screenRef.current.scrollTop = screenRef.current.scrollHeight;
+  }, [entries, bootCount, showIntro]);
+
+  useEffect(() => {
+    function focusOnTyping(event: globalThis.KeyboardEvent) {
+      const target = event.target as HTMLElement | null;
+      if (!bootDone || target?.closest("input, button, a") || event.ctrlKey || event.metaKey || event.altKey) return;
+      if (event.key.length === 1) inputRef.current?.focus();
+    }
+    window.addEventListener("keydown", focusOnTyping);
+    return () => window.removeEventListener("keydown", focusOnTyping);
+  }, [bootDone]);
+
+  function syncCaret() {
+    window.requestAnimationFrame(() => setCaretIndex(inputRef.current?.selectionStart ?? input.length));
+  }
+
+  function remember(command: string) {
+    setCommandHistory((current) => {
+      const next = [...current, command];
+      setHistoryPosition(next.length);
+      return next;
+    });
+  }
 
   function runCommand(rawCommand: string) {
     const typed = rawCommand.trim();
     if (!typed) return;
     const normalized = normalize(typed);
     const [command, ...args] = normalized.split(/\s+/);
+    remember(typed);
 
-    if (command === "limpar" || command === "clear" || command === "cls") {
-      setHistory([]);
+    if (["limpar", "clear", "cls"].includes(command)) {
+      setEntries([]);
+      setShowIntro(false);
       setInput("");
+      setCaretIndex(0);
       return;
     }
 
     let entry: HistoryEntry;
-    if (command === "ajuda" || command === "help") entry = { command: typed, kind: "help" };
-    else if (command === "jogos" || command === "games") entry = { command: typed, kind: "games" };
-    else if (command === "projetos" || command === "projects") entry = { command: typed, kind: "projects" };
-    else if (command === "antigos" || command === "old") entry = { command: typed, kind: "old" };
-    else if (command === "equipe" || command === "sobre" || command === "team") entry = { command: typed, kind: "team" };
+    if (["ajuda", "help", "?"].includes(command)) entry = { command: typed, kind: "help" };
+    else if (["jogos", "games"].includes(command)) entry = { command: typed, kind: "games" };
+    else if (["projetos", "outros", "outros-projetos", "projects"].includes(normalized)) entry = { command: typed, kind: "projects" };
+    else if (["antigos", "projetos-antigos", "old"].includes(normalized)) entry = { command: typed, kind: "old" };
+    else if (["equipe", "team", "crew"].includes(command)) entry = { command: typed, kind: "team" };
+    else if (["sobre", "about"].includes(command)) entry = { command: typed, kind: "about" };
     else if (command === "logo") entry = { command: typed, kind: "logo" };
-    else if (command === "abrir" || command === "open") {
+    else if (["abrir", "open"].includes(command)) {
       const id = args.join("-");
       const project = allProjects.find((item) => normalize(item.id) === id || normalize(item.name).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") === id);
       if (project) {
-        openProject(project);
+        openUrl(project.url);
         entry = { command: typed, kind: "message", message: `abrindo ${project.name}...` };
-      } else {
-        entry = { command: typed, kind: "message", message: `projeto não encontrado: ${args.join(" ") || "<id>"}` };
-      }
-    } else {
-      entry = { command: typed, kind: "message", message: `comando não encontrado: ${typed}. digite ajuda.` };
-    }
+      } else entry = { command: typed, kind: "message", message: `projeto não encontrado: ${args.join(" ") || "<id>"}` };
+    } else entry = { command: typed, kind: "message", message: `comando não reconhecido: “${typed}”. tente “help”.` };
 
-    setHistory((current) => [...current, entry]);
+    setEntries((current) => [...current, entry]);
     setInput("");
+    setCaretIndex(0);
   }
 
   function submit(event: FormEvent) {
@@ -193,54 +263,98 @@ export default function Terminal() {
     runCommand(input);
   }
 
+  function handleInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.ctrlKey && event.key.toLowerCase() === "l") {
+      event.preventDefault();
+      runCommand("limpar");
+      return;
+    }
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      if (!commandHistory.length) return;
+      const next = Math.max(0, historyPosition - 1);
+      setHistoryPosition(next);
+      setInput(commandHistory[next] ?? "");
+      setCaretIndex((commandHistory[next] ?? "").length);
+    } else if (event.key === "ArrowDown") {
+      event.preventDefault();
+      const next = Math.min(commandHistory.length, historyPosition + 1);
+      setHistoryPosition(next);
+      setInput(next === commandHistory.length ? "" : commandHistory[next]);
+      setCaretIndex(next === commandHistory.length ? 0 : commandHistory[next].length);
+    } else if (event.key === "Tab") {
+      event.preventDefault();
+      const value = normalize(input);
+      const match = commandNames.find((name) => name.startsWith(value));
+      if (value && match) {
+        setInput(match);
+        setCaretIndex(match.length);
+      }
+    }
+  }
+
   return (
-    <main className="screen" onClick={(event) => {
-      if (!(event.target as HTMLElement).closest("button")) inputRef.current?.focus();
+    <main className="terminal-shell" onClick={(event) => {
+      const selection = window.getSelection()?.toString();
+      if (!(event.target as HTMLElement).closest("button") && !selection) inputRef.current?.focus();
     }}>
+      <div className="crt" aria-hidden="true" />
+      <div className="vignette" aria-hidden="true" />
       <section className="terminal" aria-label="Terminal da EriLab">
         <header className="terminal-bar">
-          <span>ERILAB // TERMINAL</span>
-          <span className="online"><i /> online</span>
+          <span className="window-dots" aria-hidden="true"><i /><i /><i /></span>
+          <span>erickssen@erilab:~$</span>
         </header>
 
-        <div className="terminal-body">
-          <pre className="ascii-logo" aria-label="Logo da EriLab em ASCII">{ASCII_LOGO}</pre>
-          <h1>ERILAB</h1>
-          <p>equipe de jogos</p>
-          <p className="boot-line">sistema iniciado. digite um comando ou clique nele:</p>
-
-          <nav className="command-list" aria-label="Comandos rápidos">
-            {commands.map((command) => (
-              <button className="terminal-link" key={command} onClick={() => runCommand(command)}>[{command}]</button>
-            ))}
-          </nav>
-
-          <div className="history" aria-live="polite">
-            {history.map((entry, index) => (
-              <div className="history-entry" key={`${entry.command}-${index}`}>
-                <p className="command-echo"><span>visitante@erilab:~$</span> {entry.command}</p>
-                <Output entry={entry} />
+        <div className="terminal-screen" ref={screenRef} aria-live="polite">
+          {showIntro ? (
+            <div className="intro">
+              <pre className="ascii-logo" aria-label="Logo da EriLab em ASCII">{ASCII_LOGO}</pre>
+              <p className="brand-name">EriLab</p>
+              <p className="tagline">equipe de jogos</p>
+              <div className="boot-output">
+                {bootLines.slice(0, bootCount).map((line, index) => <p className={index === bootLines.length - 1 ? "boot-ok" : "boot-line"} key={line}>{line}</p>)}
               </div>
-            ))}
-          </div>
+              {bootDone ? (
+                <div className="welcome">
+                  <p>digite “help” ou escolha um comando:</p>
+                  <nav aria-label="Comandos rápidos">
+                    {commandNames.slice(0, 6).map((command) => <CommandButton key={command} command={command} run={runCommand}>{command}</CommandButton>)}
+                  </nav>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
 
-          <form className="prompt" onSubmit={submit}>
-            <label htmlFor="terminal-input">visitante@erilab:~$</label>
+          {entries.map((entry, index) => (
+            <div className="history-entry" key={`${entry.command}-${index}`}>
+              <p className="command-echo"><span>erilab&gt;</span> {entry.command}</p>
+              <Output entry={entry} run={runCommand} />
+            </div>
+          ))}
+        </div>
+
+        <form className="prompt" onSubmit={submit}>
+          <label htmlFor="terminal-input">erilab&gt;</label>
+          <div className="input-wrap">
             <input
               ref={inputRef}
               id="terminal-input"
               value={input}
-              onChange={(event) => setInput(event.target.value)}
+              onChange={(event) => { setInput(event.target.value); setCaretIndex(event.target.selectionStart ?? event.target.value.length); }}
+              onKeyDown={handleInputKeyDown}
+              onKeyUp={syncCaret}
+              onClick={syncCaret}
               autoComplete="off"
               autoCapitalize="none"
               spellCheck={false}
               aria-label="Digite um comando"
-              autoFocus
+              placeholder={bootDone ? "digite um comando… (help)" : "carregando…"}
+              disabled={!bootDone}
             />
-            <span className="cursor" aria-hidden="true" />
-          </form>
-          <div ref={endRef} />
-        </div>
+            <span className="cursor-track" aria-hidden="true"><span className="caret-measure">{input.slice(0, caretIndex)}</span><i /></span>
+          </div>
+        </form>
       </section>
     </main>
   );
