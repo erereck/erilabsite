@@ -60,3 +60,11 @@ test("mantém todo o catálogo solicitado", async () => {
   assert.doesNotMatch(terminal, /showIntro|setShowIntro/);
   assert.ok(terminal.includes("<ProjectList items={otherProjects} compact />"));
 });
+
+test("mantém o foco da escrita somente no computador", async () => {
+  const terminal = await readFile(new URL("../app/terminal.tsx", import.meta.url), "utf8");
+
+  assert.match(terminal, /\(hover: hover\) and \(pointer: fine\)/);
+  assert.match(terminal, /onBlur=\{keepDesktopFocus\}/);
+  assert.match(terminal, /else \{\s*inputRef\.current\?\.blur\(\);\s*\}/);
+});

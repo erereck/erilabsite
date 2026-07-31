@@ -86,6 +86,10 @@ const commandNames = ["help", "jogos", "projetos", "equipe", "sobre", "logo", "l
 type OutputKind = "help" | "games" | "projects" | "team" | "about" | "logo" | "message";
 type HistoryEntry = { command: string; kind: OutputKind; message?: string };
 
+function usesDesktopPointer() {
+  return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+}
+
 function normalize(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 }
@@ -180,6 +184,8 @@ export default function Terminal() {
   }, [entries]);
 
   useEffect(() => {
+    if (usesDesktopPointer()) inputRef.current?.focus({ preventScroll: true });
+
     function focusOnTyping(event: globalThis.KeyboardEvent) {
       const target = event.target as HTMLElement | null;
       if (target?.closest("input, button, a") || event.ctrlKey || event.metaKey || event.altKey) return;
@@ -191,6 +197,12 @@ export default function Terminal() {
 
   function syncCaret() {
     window.requestAnimationFrame(() => setCaretIndex(inputRef.current?.selectionStart ?? input.length));
+  }
+
+  function keepDesktopFocus() {
+    if (usesDesktopPointer()) {
+      window.requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
+    }
   }
 
   function remember(command: string) {
@@ -274,7 +286,14 @@ export default function Terminal() {
 
   return (
     <main className="terminal-shell" onPointerDownCapture={(event) => {
-      if (!(event.target as HTMLElement).closest("input")) inputRef.current?.blur();
+      if ((event.target as HTMLElement).closest("input")) return;
+
+      if (usesDesktopPointer()) {
+        event.preventDefault();
+        inputRef.current?.focus({ preventScroll: true });
+      } else {
+        inputRef.current?.blur();
+      }
     }}>
       <div className="crt" aria-hidden="true" />
       <div className="vignette" aria-hidden="true" />
@@ -312,6 +331,7 @@ export default function Terminal() {
               onKeyDown={handleInputKeyDown}
               onKeyUp={syncCaret}
               onClick={syncCaret}
+              onBlur={keepDesktopFocus}
               autoComplete="off"
               autoCapitalize="none"
               spellCheck={false}
