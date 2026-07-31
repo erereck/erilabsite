@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     title: "EriLab // Terminal",
     description: "Jogos, projetos e equipe da EriLab.",
     type: "website",
-    images: [{ url: "https://erereck.github.io/erilab/og.png", width: 1536, height: 1024, alt: "EriLab // Terminal" }],
+    images: [{ url: "https://erereck.github.io/erilab/og.png", width: 1356, height: 757, alt: "Logo da EriLab" }],
   },
   twitter: {
     card: "summary_large_image",
