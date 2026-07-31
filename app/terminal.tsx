@@ -142,7 +142,7 @@ function Output({ entry, run }: { entry: HistoryEntry; run: (command: string) =>
     );
   }
   if (entry.kind === "games") return <div className="output-block"><p className="section-title">jogos — {games.length} no catálogo</p><ProjectList items={games} compact showHint={false} /><p className="section-title old-section">jogos antigos — {oldGames.length}</p><ProjectList items={oldGames} compact showHint={false} /><p className="hint">use “abrir &lt;id&gt;” ou clique em uma linha</p></div>;
-  if (entry.kind === "projects") return <><p className="section-title">outros projetos</p><ProjectList items={otherProjects} /></>;
+  if (entry.kind === "projects") return <><p className="section-title">outros projetos</p><ProjectList items={otherProjects} compact /></>;
   if (entry.kind === "logo") return <pre className="ascii-logo compact">{ASCII_LOGO}</pre>;
   if (entry.kind === "team") {
     return (
@@ -172,16 +172,12 @@ export default function Terminal() {
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyPosition, setHistoryPosition] = useState(0);
-  const [showIntro, setShowIntro] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const screenRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
 
   useEffect(() => {
     if (screenRef.current) screenRef.current.scrollTop = screenRef.current.scrollHeight;
-  }, [entries, showIntro]);
+  }, [entries]);
 
   useEffect(() => {
     function focusOnTyping(event: globalThis.KeyboardEvent) {
@@ -214,7 +210,6 @@ export default function Terminal() {
 
     if (["limpar", "clear", "cls"].includes(command)) {
       setEntries([]);
-      setShowIntro(false);
       setInput("");
       setCaretIndex(0);
       return;
@@ -278,9 +273,8 @@ export default function Terminal() {
   }
 
   return (
-    <main className="terminal-shell" onClick={(event) => {
-      const selection = window.getSelection()?.toString();
-      if (!(event.target as HTMLElement).closest("button") && !selection) inputRef.current?.focus();
+    <main className="terminal-shell" onPointerDownCapture={(event) => {
+      if (!(event.target as HTMLElement).closest("input")) inputRef.current?.blur();
     }}>
       <div className="crt" aria-hidden="true" />
       <div className="vignette" aria-hidden="true" />
@@ -291,15 +285,13 @@ export default function Terminal() {
         </header>
 
         <div className="terminal-screen" ref={screenRef} aria-live="polite">
-          {showIntro ? (
-            <div className="intro">
-              <pre className="ascii-logo" aria-label="Logo da EriLab em ASCII">{ASCII_LOGO}</pre>
-              <p className="brand-name">EriLab</p>
-              <nav className="intro-commands" aria-label="Comandos rápidos">
-                {commandNames.map((command) => <CommandButton key={command} command={command} run={runCommand}>{command}</CommandButton>)}
-              </nav>
-            </div>
-          ) : null}
+          <div className="intro">
+            <pre className="ascii-logo" aria-label="Logo da EriLab em ASCII">{ASCII_LOGO}</pre>
+            <p className="brand-name">EriLab</p>
+            <nav className="intro-commands" aria-label="Comandos rápidos">
+              {commandNames.map((command) => <CommandButton key={command} command={command} run={runCommand}>{command}</CommandButton>)}
+            </nav>
+          </div>
 
           {entries.map((entry, index) => (
             <div className="history-entry" key={`${entry.command}-${index}`}>

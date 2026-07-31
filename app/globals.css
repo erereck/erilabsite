@@ -26,7 +26,7 @@ body {
 }
 button, input { font: inherit; }
 
-.terminal-shell { width: 100%; height: 100svh; background: var(--bg); }
+.terminal-shell { width: 100%; height: 100dvh; background: var(--bg); }
 .crt, .vignette { position: fixed; inset: 0; pointer-events: none; }
 .crt {
   z-index: 50;
@@ -97,6 +97,8 @@ p { margin: 0; white-space: pre-wrap; word-break: break-word; }
   text-align: left;
   text-decoration: none;
   cursor: default;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .terminal-link:hover { color: var(--amber); }
 .terminal-link:focus-visible { outline: 1px dashed var(--amber); outline-offset: 3px; }
@@ -176,13 +178,24 @@ p { margin: 0; white-space: pre-wrap; word-break: break-word; }
 }
 @media (max-width: 680px) {
   body { font-size: 13px; }
-  .terminal { padding: 14px 12px 10px; }
+  .terminal { padding: 12px 10px max(8px, env(safe-area-inset-bottom)); }
+  .terminal-bar { margin-bottom: 8px; padding-bottom: 8px; }
+  .ascii-logo { font-size: 7px; line-height: 7.2px; }
+  .intro-commands { gap: 4px 12px; }
   .project-line { grid-template-columns: 1fr auto; gap: 0 10px; padding: 5px 0; }
-  .project-line.compact { grid-template-columns: minmax(130px, auto) 1fr; gap: 10px; }
+  .project-line.compact { grid-template-columns: minmax(0, 43%) minmax(0, 57%); gap: 8px; }
+  .project-line.compact .project-id, .project-line.compact .project-name { min-width: 0; overflow-wrap: anywhere; }
   .project-description { grid-column: 1 / -1; }
   .project-meta { grid-column: 2; grid-row: 1; font-size: 11px; }
   .help-row { grid-template-columns: 118px 1fr; gap: 8px; }
   .team-list p { grid-template-columns: 96px 1fr; }
+  .prompt label { font-size: 12px; }
+  .prompt input { font-size: 16px; }
+}
+@media (max-width: 380px) {
+  .ascii-logo { font-size: 6px; line-height: 6.2px; }
+  .help-row { grid-template-columns: 104px 1fr; }
+  .team-list p { grid-template-columns: 82px 1fr; gap: 6px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .cursor-track i { animation: none; }

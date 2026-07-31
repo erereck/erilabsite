@@ -57,4 +57,6 @@ test("mantém todo o catálogo solicitado", async () => {
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.doesNotMatch(terminal, /BetterVB|Player\.cls/i);
   assert.doesNotMatch(terminal, /iniciando terminal da erilab|carregando catálogo de jogos/i);
+  assert.doesNotMatch(terminal, /showIntro|setShowIntro/);
+  assert.ok(terminal.includes("<ProjectList items={otherProjects} compact />"));
 });
