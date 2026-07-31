@@ -20,7 +20,7 @@ test("renderiza o terminal da EriLab", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>EriLab \/\/ Terminal<\/title>/i);
+  assert.match(html, /<title>EriLab<\/title>/i);
   assert.match(html, /EriLab/);
   assert.match(html, /Comandos rápidos/);
   assert.doesNotMatch(html, /equipe de jogos/);

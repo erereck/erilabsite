@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://erereck.github.io/erilab/"),
-  title: "EriLab // Terminal",
+  title: "EriLab",
   description: "Site da EriLab: jogos, projetos e equipe em um terminal interativo.",
   icons: {
     icon: [{ url: "https://erereck.github.io/erilab/favicon.png", type: "image/png" }],
